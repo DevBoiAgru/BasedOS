@@ -1,14 +1,16 @@
 #include "stdint.h"
-#include "bios.h"
+#include "ttyio.h"
 
 
 extern "C" void __cdecl cstart_(uint16_t bootDrive) {
     (void)bootDrive;
 
-    bios_puts("INFO: Hello from the bootloader, stage 2!\r\n");
+    ttyio::puts("INFO: Hello from the bootloader, stage 2!\r\n");
+    ttyio::putd(69);
+
 
     for (;;)
     {
-        // Wait here
+        // Halt
     }
 }
