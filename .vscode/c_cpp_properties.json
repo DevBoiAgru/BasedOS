@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Watcom",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "__cdecl="
+            ],
+            "compilerPath": "/home/devboi/.local/bin/openwatcom/binl/wpp",
+            "cStandard": "gnu23",
+            "cppStandard": "gnu++20",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
