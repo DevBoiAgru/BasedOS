@@ -52,9 +52,10 @@ main:
     mov bx, 1
     call disk_read
 
-    jmp 0x8000
-    call puts
+    ; Jump to stage 2!!
+    jmp 0x0000:0x8000
 
+    ; Should never reach here
     cli
     hlt
 
@@ -101,7 +102,7 @@ puts:
     ; Revert register values
     pop ax
     pop si
-    ret    
+    ret
 
 
 ;
@@ -187,7 +188,7 @@ disk_read:
     jnz .retry
 
 
-.success
+.success:
     pop dx
     pop cx
     pop bx
@@ -234,7 +235,7 @@ err_bios_doesnt_support_extended_mode:
 drive_number:                   db 0
 
 str_newlines:                   db NEWLINE, NEWLINE, 0
-str_hello_world:                db "INFO: Hello from the bootloader!", NEWLINE, 0
+str_hello_world:                db "INFO: Hello from the bootloader, stage 1!", NEWLINE, 0
 str_err_no_extended_mode:       db "ERROR: Bios does not support extended mode!", NEWLINE, 0
 
 

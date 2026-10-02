@@ -1,0 +1,16 @@
+FORMAT RAW BIN
+NAME build/boot2.bin
+OPTION QUIET,
+       NODEFAULTLIBS,
+       START=start_,
+       VERBOSE,
+       OFFSET=0x8000,   # Stage 1 loads the Stage 2 at 0x8000 address in RAM
+       STACK=0x200
+
+option map=build/boot2.map
+
+ORDER
+    CLNAME CODE
+        SEGMENT _ENTRY
+        SEGMENT _TEXT
+    CLNAME DATA
