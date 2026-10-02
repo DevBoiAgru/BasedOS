@@ -36,24 +36,27 @@ main:
     ; Bios gives us the drive, 0x00 for floppy, 0x80 for hard disk. Save this information for later
     mov [drive_number], dl
 
-
-    ; Print hello world! 
-    mov si, hello_world
+    ; Print newlines to differentiate bios output from bootloader output! 
+    mov si, str_newlines
     call puts
 
+    ; Print hello world! 
+    mov si, str_hello_world
+    call puts
 
-;
-; ERROR HANDLING
-;
-wait_key_and_reboot:
-    mov ah, 0
-    int 16h             ; Wait for keypress
-    jmp 0xFFFF          ; Jump to beginning of BIOS, thus reboot
+    ; Read second sector (LBA=1), at location 0x8000
+    ; Second sector stores the second stage of the bootloader
+    mov al, 1
+    mov cx, 0
+    mov dx, 0x8000
+    mov bx, 1
+    call disk_read
 
-.halt:
-    cli                 ; Disable interrupts so that CPU cannot get out of halt state    
-    jmp .halt
+    jmp 0x8000
+    call puts
 
+    cli
+    hlt
 
 
 ;
@@ -108,23 +111,131 @@ puts:
 ;
 ; Disk read
 ; Params:
-;   - 
+;   - al: Number of sectors to read
+;   - cx: Segment for destination buffer address
+;   - dx: Offset for destination buffer address
+;   - bx: LBA to read
+disk_read:
+    ; Save all the registers we modify in the function
+    push ds
+    push ax
+    push bx
+    push cx
+    push dx
+
+    ; Push whatever is modified in bios calls
+    push ax
+    push bx
+    push cx
+    push dx
+
+    ; Verify extended LBA support in the bios
+    mov ah, 0x41
+    mov bx, 0x55AA
+    mov dl, [drive_number]
+    int 0x13
+    ; If bios call failed carry flag is set
+    jc err_bios_doesnt_support_extended_mode
+
+
+    ; Now  we should have flags in the CX register for supported commands
+    ; for our case we need to check if bit 0 is set
+    test cx, 1
+    ; If the LSB in CX is 0, zero flag is 1. (cx was 0)
+    ; thus bios doesnt supoprt extended mode lba
+    jz err_bios_doesnt_support_extended_mode
+
+
+    ; Restore the function call arguments
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+
+    push ax
+    ; Zero out the DS segment register, we only need offset for the DAP address
+    ; since its saved in this sector itself (Within 512 bytes)
+    xor ax, ax
+    mov ds, ax
+    pop ax
+
+    ; Put appropriate values in the disk address packet
+    mov [dap_sector_count], al
+    mov [dap_transfer_buffer_off], dx
+    mov [dap_transfer_buffer_seg], cx
+    mov [dap_lba], bx
+
+    ; Retry count
+    mov ah, 3
+
+.retry:
+
+    ; Call the bios to read the disk
+    pusha
+    stc                                   ; Bios clears this on success
+    mov si, disk_address_packet
+    mov ah, 0x42
+    mov dl, [drive_number]                ; Read whatever drive the bios gave us
+    int 0x13
+
+    ; Error handling
+    popa
+    jnc .success
+
+    dec ah
+    test ah, ah
+    jnz .retry
+
+
+.success
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    pop ds
+
+    ret
+
+;
+; Disk Address Packet (For disk instructions via int 13h)
+;
+align 4
+disk_address_packet:
+    dap_packet_size                 db 0x10     ; 16 bytes
+    dap_zero                        db 0x00     ; Always zero. Idk why
+    dap_sector_count                dw 0x00     ; Number of sectors to read
+
+    ; (Ordered as Offset:Segment because of little endian)
+    dap_transfer_buffer_off         dw 0x00     ; Offset for address of target buffer
+    dap_transfer_buffer_seg         dw 0x00     ; Segment for address of target buffer
+
+    dap_lba                         dq 0x00     ; Address on the disk
+
 
 
 ;
-; Disk Address Packet
+; ERROR HANDLING
 ;
-dap_packet_size                 db 0x10     ; 16 bytes
-dap_zero                        db 0x00     ; Always zero? Idk why
-dap_sector_count                dw 0x00     ; Number of sectors to read
-dap_transfer_buffer             dd 0x00     ; Segment:Offset for address of target buffer
-dap_lba                         dq 0x00     ; Address on the disk
+wait_key_and_reboot:
+    mov ah, 0
+    int 16h             ; Wait for keypress
+    jmp 0xFFFF          ; Jump to beginning of BIOS, thus reboot
+
+err_bios_doesnt_support_extended_mode:
+    mov si, str_err_no_extended_mode
+    call puts
+    jmp wait_key_and_reboot
+
+
 
 ;
 ; Data
 ;
-hello_world:                    db "Hello from the bootloader!", NEWLINE, 0
 drive_number:                   db 0
+
+str_newlines:                   db NEWLINE, NEWLINE, 0
+str_hello_world:                db "INFO: Hello from the bootloader!", NEWLINE, 0
+str_err_no_extended_mode:       db "ERROR: Bios does not support extended mode!", NEWLINE, 0
 
 
 ; Fill the space upto byte 446 with 0x00

@@ -16,7 +16,7 @@ BUILD_DIR = Path("build")
 def buildBootloader(args):
     if args.verbose:
         print("Building Bootloader (Stage 1)")
-    subprocess.run([ASM, SRC_DIR / "bootloader/stage1.asm", "-o", BUILD_DIR / "boot1.bin"])
+    subprocess.run([ASM, SRC_DIR / "bootloader/stage1/boot1.asm", "-o", BUILD_DIR / "boot1.bin"])
 
 def runOS(args):
     subprocess.run([QEMU, "-hda", BUILD_DIR / "disk.img"])
