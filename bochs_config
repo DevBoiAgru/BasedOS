@@ -1,0 +1,9 @@
+megs: 128
+romimage: file=/home/devboi/Desktop/Playground/Software/bochs/bios/BIOS-bochs-legacy, address=0xffff0000
+vgaromimage: file=/home/devboi/Desktop/Playground/Software/bochs/bios/VGABIOS-lgpl/VGABIOS-lgpl-latest.bin
+
+ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f6, irq=14
+ata0-master: type=disk, path="build/disk.img", mode=flat
+
+boot: disk
+mouse: enabled=0

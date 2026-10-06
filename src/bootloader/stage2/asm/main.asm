@@ -6,9 +6,14 @@ segment _ENTRY public class=CODE use16
 ; CODE
 ;
 global start_
+global drive_number
 extern _cstart_
 
 start_:
+
+    ; Stage 1 gives us the drive number in dl
+    mov [drive_number], dl
+
     cli
     xor ax, ax
     mov ss, ax
@@ -26,3 +31,6 @@ start_:
     cli
     hlt
     jmp .halt
+
+
+drive_number:                   db 0

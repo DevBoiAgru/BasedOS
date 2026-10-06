@@ -10,6 +10,8 @@ bits 16
 ;
 %define NEWLINE 0x0D, 0x0A      ; Linefeed + Carriage return characters
 
+global drive_number
+
 ;
 ; CODE
 ;
@@ -52,6 +54,9 @@ main:
     mov bx, 1
     call disk_read
 
+    ; Provide disk number in dl
+    mov dl, [drive_number]
+    
     ; Jump to stage 2!!
     jmp 0x0000:0x8000
 

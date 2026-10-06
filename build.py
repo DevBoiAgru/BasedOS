@@ -117,7 +117,7 @@ def buildBootloader(args):
 
 
 def runOS(args):
-    subprocess.run([QEMU, "-hda", BUILD_DIR / "disk.img"])
+    subprocess.run([QEMU, "-s", "-hda", BUILD_DIR / "disk.img"])
 
 
 def copyBLToDisk(args):
