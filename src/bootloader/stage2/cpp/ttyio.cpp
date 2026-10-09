@@ -17,6 +17,7 @@ void ttyio::putln(char* str) {
     while (*str) {
         bios::bios_putc(*str++);
     }
+    bios::bios_putc('\r');
     bios::bios_putc('\n');
 }
 
