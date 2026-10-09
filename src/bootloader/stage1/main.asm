@@ -32,7 +32,7 @@ main:
     ; Setup stack
     mov ss, ax
     mov sp, 0x7C00      ; stack grows downwards from where we are in memory
-                        ; anything after 0x7X00 is our OS! setting stack at
+                        ; anything after 0x7C00 is this bootloader! setting stack at
                         ; at the end will make it overwrite the OS
 
     ; Bios gives us the drive, 0x00 for floppy, 0x80 for hard disk. Save this information for later
