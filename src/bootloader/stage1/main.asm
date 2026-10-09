@@ -240,8 +240,8 @@ err_bios_doesnt_support_extended_mode:
 drive_number:                   db 0
 
 str_newlines:                   db NEWLINE, NEWLINE, 0
-str_hello_world:                db "INFO: Hello from the bootloader, stage 1!", NEWLINE, 0
-str_err_no_extended_mode:       db "ERROR: Bios does not support extended mode!", NEWLINE, 0
+str_hello_world:                db "[BOOTLOADER - S1][INFO]: Hello from the bootloader, stage 1!", NEWLINE, 0
+str_err_no_extended_mode:       db "[BOOTLOADER - S1][ERROR]: Bios does not support extended mode!", NEWLINE, 0
 
 
 ; Fill the space upto byte 446 with 0x00
