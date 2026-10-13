@@ -16,6 +16,10 @@ _bios_putc:
     push bp
     mov bp, sp
     push bx
+    push si
+    push di
+    push ds
+    push es
 
     ; [BP + 0] is old call frame
     ; [BP + 2] is return addr
@@ -30,11 +34,13 @@ _bios_putc:
     int 0x10                    ; Print character interrupt (Handled by BIOS signal handler)
     
     ; Restore registers
+    pop es
+    pop ds
+    pop di
+    pop si
     pop bx
     pop bp
     ret
-
-
 
 ;
 ; Disk functions
@@ -57,6 +63,7 @@ _bios_disk_read:
 
 
     ; Push whatever is modified in bios calls
+    push ds
     push ax
     push bx
     push cx
@@ -146,6 +153,7 @@ _bios_disk_read:
 
 .success:
     pop ax
+    pop ds
 
     ; Restore call frame
     pop bp
@@ -159,9 +167,11 @@ _bios_disk_read:
     pop dx
     pop cx
     pop bx
+    pop ds
     pop ax
 
     mov ax, 1
+    pop ds
     pop bp
     ret
 

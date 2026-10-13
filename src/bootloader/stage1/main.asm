@@ -48,6 +48,7 @@ main:
 
     ; Read second sector (LBA=1) and subsequent 5 sectors, at location 0x8000
     ; Second sector stores the second stage of the bootloader
+    ; Bootloader stage 2 can currently be 6 * 512 = 3072 bytes (Although space upto LBA 2048 is free)
     mov al, 6
     mov cx, 0
     mov dx, 0x8000
