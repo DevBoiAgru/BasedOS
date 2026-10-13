@@ -23,7 +23,7 @@ struct BiosParameterBlock {
     uint8_t NumberOfSectorsPerFAT1216[2];
     uint8_t NumberOfSectorsPerTrack[2];
     uint8_t NumberOfHeadsInMedia[2];
-    uint8_t NumberOfHiddenSectors[2];
+    uint8_t NumberOfHiddenSectors[4];
     uint8_t SectorCountLARGE[4];
 
     // FAT32 specific fields
