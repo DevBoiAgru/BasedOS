@@ -46,9 +46,9 @@ main:
     mov si, str_hello_world
     call puts
 
-    ; Read second sector (LBA=1), at location 0x8000
+    ; Read second sector (LBA=1) and subsequent 5 sectors, at location 0x8000
     ; Second sector stores the second stage of the bootloader
-    mov al, 1
+    mov al, 6
     mov cx, 0
     mov dx, 0x8000
     mov bx, 1

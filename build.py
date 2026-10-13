@@ -124,8 +124,8 @@ def copyBLToDisk(args):
     # Overwrite entire Sector 0 of the disk with the Stage 1 bootloader
     subprocess.run(["dd", f"if={BUILD_DIR / 'stage1/boot1.bin'}", f"of={BUILD_DIR / 'disk.img'}", "bs=512", "count=1", "conv=notrunc", "status=none"])
 
-    # Overwrite entire Sector 1 of the disk with the Stage 2 bootloader
-    subprocess.run(["dd", f"if={BUILD_DIR / 'stage2/boot2.bin'}", f"of={BUILD_DIR / 'disk.img'}", "bs=512", "count=1", "conv=notrunc", "status=none", "seek=1"])
+    # Overwrite entire Sector 1 and onwards of the disk with the Stage 2 bootloader
+    subprocess.run(["dd", f"if={BUILD_DIR / 'stage2/boot2.bin'}", f"of={BUILD_DIR / 'disk.img'}", "bs=512", "conv=notrunc", "status=none", "seek=1"])
 
 
 def createDisk(args):
