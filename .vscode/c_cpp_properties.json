@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**"
             ],
             "defines": [
-                "__cdecl="
+                "__cdecl=",
+                "__far="
             ],
             "compilerPath": "/home/devboi/.local/bin/openwatcom/binl/wpp",
             "cStandard": "gnu23",
