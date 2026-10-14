@@ -58,6 +58,7 @@ struct FSInfo {
 #pragma pack()
 
 
+uint32_t ClusterToLBA(uint32_t clusterNum, uint32_t dataStartLBA, BiosParameterBlock* BPB);
 
 
 

@@ -30,5 +30,16 @@ inline uint32_t u8_to_u32_le(const uint8_t* arr) {
     return res;
 }
 
+// There is no 32 bit integer multiplication (atleast i couldnt find it) without having to link
+// runtimes so gotta use this instead
+template <typename T>
+uint32_t u32_multiply(uint32_t a, T b) {
+    uint32_t res = 0;
+    for (T i = 0; i < b; i++) {
+        res += a; 
+    }
+    return res;
+}
+
 
 } //namespace utils
