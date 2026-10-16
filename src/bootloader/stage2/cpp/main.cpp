@@ -12,7 +12,7 @@ const uint16_t NUMBER_BLANK_SECTORS = 2048;
 extern "C" void __cdecl cstart_(uint16_t bootDrive) {
     (void)bootDrive;
 
-    ttyio::putln("[BOOTLOADER - S2][INFO]: Hello from the bootloader, stage 2!");
+    ttyio::putln("[BOOTLOADER - S2][INFO]: Hello from C++!");
 
     // Memory Layout (RAM):
     // 0x0000 - 0x7c00      - Stack for the bootloader
@@ -27,11 +27,18 @@ extern "C" void __cdecl cstart_(uint16_t bootDrive) {
 
     fat::BiosParameterBlock* BPB = reinterpret_cast<fat::BiosParameterBlock*>(bpbDestAddr);
     
-    ttyio::puts("Volume OEM Identifier: ");
+    ttyio::putln("Disk information: ");
+    ttyio::puts(" - Volume Label: ");
+    ttyio::putsn((char*)BPB->VolumeLabelString, 11);
+    ttyio::putln("");
+    ttyio::puts(" - Volume OEM Identifier: ");
     ttyio::putsn((char*)BPB->OEMIdentifier, 8);
     ttyio::putln("");
-    ttyio::puts("Volume Label: ");
-    ttyio::putsn((char*)BPB->VolumeLabelString, 11);
+    ttyio::puts(" - Sectors per cluster: ");
+    ttyio::putd(BPB->SectorsPerCluster);
+    ttyio::putln("");
+    ttyio::puts(" - Drive number: ");
+    ttyio::putd(BPB->DriveNumber);
     ttyio::putln("");
 
     // Our disc format:
